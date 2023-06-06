@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lista de Tarefas</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body { font-family: Arial, sans-serif; }
+    input[type="text"] { width: 300px; padding: 5px; }
+    button { margin-top: 10px; }
+    ul { list-style-type: none; padding: 0; }
+    li { margin-bottom: 5px; }
+    .completed { text-decoration: line-through; }
+    /* Estilos do modo dark */
+    body.dark-mode { background-color: #222; color: #fff; }
+    body.dark-mode button { background-color: #555; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <h1>Lista de Tarefas</h1>
+    <div class="input-group mb-3">
+      <input type="text" id="taskInput" class="form-control" placeholder="Nova tarefa">
+      <div class="input-group-append">
+        <button class="btn btn-primary" onclick="addTask()">Adicionar Tarefa</button>
+      </div>
+    </div>
+    <ul id="taskList" class="list-group"></ul>
+    <button class="btn btn-secondary mt-3" onclick="toggleDarkMode()">Alternar Modo</button>
+  </div>
+
+  <script>
+    // Array para armazenar as tarefas
+    let tasks = [];
+
+    function addTask() {
+      const taskInput = document.getElementById('taskInput');
+      const taskList = document.getElementById('taskList');
+
+      // Verifica se o campo de entrada não está vazio
+      if (taskInput.value !== '') {
+        // Cria um objeto de tarefa
+        const task = {
+          description: taskInput.value,
+          completed: false
+        };
+
+        // Adiciona a tarefa ao array de tarefas
+        tasks.push(task);
+
+        // Limpa o campo de entrada
+        taskInput.value = '';
+
+        // Renderiza a lista de tarefas
+        renderTasks();
+      }
+    }
+
+    function toggleTask(index) {
+      // Alterna o estado de concluído/não concluído da tarefa
+      tasks[index].completed = !tasks[index].completed;
+
+      // Renderiza a lista de tarefas atualizada
+      renderTasks();
+    }
+
+    function deleteTask(index) {
+      // Remove a tarefa do array de tarefas
+      tasks.splice(index, 1);
+
+      // Renderiza a lista de tarefas atualizada
+      renderTasks();
+    }
+
+    function renderTasks() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+
+      // Percorre o array de tarefas e cria os elementos HTML correspondentes
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.classList.add('list-group-item');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = task.completed;
+        checkbox.addEventListener('change', () => toggleTask(index));
+        const description = document.createElement('span');
+        description.textContent = task.description;
+        if (task.completed) {
+          description.classList.add('completed');
+        }
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Excluir';
+        deleteButton.classList.add('btn', 'btn-danger', 'btn-sm');
+        deleteButton.addEventListener('click', () => deleteTask(index));
+
+        li.appendChild(checkbox);
+        li.appendChild(description);
+        li.appendChild(deleteButton);
+        taskList.appendChild(li);
+      });
+    }
+
+    function toggleDarkMode() {
+      const body = document.body;
+      body.classList.toggle('dark-mode');
+    }
+  </script>
+</body>
+</html>
